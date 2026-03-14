@@ -24,6 +24,12 @@ class MyPolicy(Policy):
     # BOILERPLATE CONSTANTS
     STEPS_PER_PLAN = 5
     TRAVEL_RANGE_SAFETY_FACTOR = 0.9  # Safety factor for energy-based diversion decisions
+    VERTICAL_TRAFFIC_AVOIDANCE_MULTIPLIER = (
+        2.5  # Increase vertical evasion distance for traffic to encourage altitude changes
+    )
+    HORIZONTAL_TRAFFIC_AVOIDANCE_MULTIPLIER = (
+        2.5  # Increase horizontal repulsion for traffic to encourage stronger avoidance maneuvers
+    )
 
     # SEPARATION THRESHOLDS (From Guidelines)
     COLLISION_DIST_M = 20.0  # Collision if <= 20m AND same altitude layer
@@ -229,9 +235,14 @@ class MyPolicy(Policy):
             dist_to_traffic = math.hypot(
                 traffic.position.x - current_pos.x, traffic.position.y - current_pos.y
             )
+            alt_diff = abs(traffic.alt_layer - target_alt)
+
             if (
-                dist_to_traffic < (self.ADVISORY_DIST_M * 1.5)
-                and abs(traffic.alt_layer - target_alt) <= self.SEPARATION_ALT_DIFF
+                dist_to_traffic
+                < (self.ADVISORY_DIST_M * self.VERTICAL_TRAFFIC_AVOIDANCE_MULTIPLIER)
+                and alt_diff <= self.SEPARATION_ALT_DIFF
+            ) or (
+                dist_to_traffic < self.CONFLICT_DIST_M and alt_diff <= self.SEPARATION_ALT_DIFF + 1
             ):
                 target_alt = target_alt + 2 if target_alt < 2 else target_alt - 2
                 break
@@ -271,16 +282,23 @@ class MyPolicy(Policy):
 
             # Traffic Repulsion
             for traffic in obs.traffic_tracks:
-                if abs(traffic.alt_layer - target_alt) > self.SEPARATION_ALT_DIFF:
+                if abs(traffic.alt_layer - sim_alt) > self.SEPARATION_ALT_DIFF:
                     continue
+
                 tx = traffic.position.x
                 ty = traffic.position.y
                 if traffic.velocity:
                     tx += traffic.velocity.x * (i + 1)
                     ty += traffic.velocity.y * (i + 1)
+
                 dist_t = math.hypot(tx - sim_pos.x, ty - sim_pos.y)
-                if 0 < dist_t < (self.ADVISORY_DIST_M * 2.0):
-                    force = 20000.0 / (dist_t**2)
+
+                if (
+                    0
+                    < dist_t
+                    < (self.ADVISORY_DIST_M * self.HORIZONTAL_TRAFFIC_AVOIDANCE_MULTIPLIER)
+                ):
+                    force = 60000.0 / max(dist_t**2, 1.0)  # Prevent division by zero
                     repulse_x += ((sim_pos.x - tx) / dist_t) * force
                     repulse_y += ((sim_pos.y - ty) / dist_t) * force
 

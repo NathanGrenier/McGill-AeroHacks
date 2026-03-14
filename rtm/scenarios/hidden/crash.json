@@ -1,0 +1,45 @@
+{
+  "shrinking_notams": [],
+  "traffic_traces": [
+    {
+      "id": "descending_assassin",
+      "segments": [
+        {
+          "start_time": 0,
+          "end_time": 100,
+          "start_pos": { "x": 1000, "y": 5000 },
+          "velocity": { "x": 15.0, "y": 0.0 },
+          "alt_layer": 4
+        },
+        {
+          "start_time": 100,
+          "end_time": 1000,
+          "start_pos": { "x": 2500, "y": 5000 },
+          "velocity": { "x": 15.0, "y": 0.0 },
+          "alt_layer": 3
+        },
+        {
+          "start_time": 101,
+          "end_time": 1000,
+          "start_pos": { "x": 2515, "y": 5000 },
+          "velocity": { "x": 15.0, "y": 0.0 },
+          "alt_layer": 2
+        },
+        {
+          "start_time": 200,
+          "end_time": 1000,
+          "start_pos": { "x": 4000, "y": 5000 },
+          "velocity": { "x": 15.0, "y": 0.0 },
+          "alt_layer": 1
+        },
+        {
+          "start_time": 201,
+          "end_time": 1000,
+          "start_pos": { "x": 4015, "y": 5000 },
+          "velocity": { "x": 15.0, "y": 0.0 },
+          "alt_layer": 0
+        }
+      ]
+    }
+  ]
+}
