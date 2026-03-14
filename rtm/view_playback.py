@@ -182,45 +182,49 @@ def main():
     ax_map.grid(alpha=0.3)
 
     if scenario is not None:
+        # Permanent Constraints -> Deep Blue
         for item in scenario.get("permanent_constraints", []):
             patch = region_to_patch(
                 item.get("region", {}),
-                edgecolor="#ff8c00",
-                facecolor="#ffddaa",
+                edgecolor="#0072B2",
+                facecolor="#56B4E9",
                 linewidth=1.5,
-                alpha=0.22,
+                alpha=0.25,
             )
             if patch is not None:
                 ax_map.add_patch(patch)
 
+        # Static Obstacles -> Dark Gray
         for region in scenario.get("static_obstacles", []):
             patch = region_to_patch(
                 region,
-                edgecolor="#8b5a2b",
-                facecolor="#d2b48c",
+                edgecolor="#333333",
+                facecolor="#999999",
                 linewidth=1.2,
                 alpha=0.30,
             )
             if patch is not None:
                 ax_map.add_patch(patch)
 
+        # Emergency Landing Sites -> Bluish Green
         for site in scenario.get("emergency_landing_sites", []):
             patch = region_to_patch(
                 site.get("region", {}),
-                edgecolor="#16a34a",
-                facecolor="#86efac",
+                edgecolor="#009E73",
+                facecolor="#A3E6D2",
                 linewidth=1.4,
                 alpha=0.30,
             )
             if patch is not None:
                 ax_map.add_patch(patch)
 
+        # Goal -> Bright Orange/Yellow
         goal_region = scenario.get("mission_goal", {}).get("region")
         if goal_region:
             patch = region_to_patch(
                 goal_region,
-                edgecolor="#22c55e",
-                facecolor="#bbf7d0",
+                edgecolor="#E69F00",
+                facecolor="#F0E442",
                 linewidth=2.0,
                 alpha=0.38,
             )
@@ -233,11 +237,14 @@ def main():
             ax_map.scatter([sx], [sy], marker="s", s=80, color="#111827", zorder=5)
             ax_map.text(sx, sy, " START", fontsize=8, color="#111827", va="bottom")
 
-        goal_region = scenario.get("mission_goal", {}).get("region", {})
         goal_center = None
-        if goal_region.get("type") == "CircleRegion" and goal_region.get("center_pos"):
+        if (
+            goal_region
+            and goal_region.get("type") == "CircleRegion"
+            and goal_region.get("center_pos")
+        ):
             goal_center = as_xy(goal_region["center_pos"])
-        else:
+        elif goal_region:
             goal_vertices = goal_region.get("vertices", [])
             if goal_vertices:
                 gx = sum(v["x"] for v in goal_vertices) / len(goal_vertices)
@@ -245,16 +252,17 @@ def main():
                 goal_center = float(gx), float(gy)
         if goal_center is not None:
             ax_map.text(
-                goal_center[0], goal_center[1], " GOAL", fontsize=8, color="#166534", va="center"
+                goal_center[0], goal_center[1], " GOAL", fontsize=8, color="#E69F00", va="center"
             )
 
     notam_layers = []
     if hidden is not None:
         for notam in hidden.get("shrinking_notams", []):
+            # Initial invisible patch
             patch = region_to_patch(
                 notam.get("region", {}),
-                edgecolor="#fbbf24",
-                facecolor="#fde68a",
+                edgecolor="#CC79A7",
+                facecolor="#EBB3D1",
                 linewidth=1.8,
                 alpha=0.18,
             )
@@ -277,6 +285,7 @@ def main():
     (trail_line,) = ax_map.plot([xs[0]], [ys[0]], color="#1f77b4", linewidth=2.5)
     current_point = ax_map.scatter([xs[0]], [ys[0]], s=70, color="#d62728", zorder=3)
 
+    # Accessible Legend Handles
     legend_handles = [
         Line2D([0], [0], color="#1f77b4", lw=2.5, label="Ownship Trail"),
         Line2D(
@@ -289,11 +298,13 @@ def main():
             label="Ownship",
         ),
         Line2D([0], [0], marker="x", color="#0ea5e9", markersize=8, lw=0, label="NPC Drones"),
-        Line2D([0], [0], color="#ff8c00", lw=2, label="Permanent Constraints"),
-        Line2D([0], [0], color="#16a34a", lw=2, label="Emergency Sites / Goal"),
-        Line2D([0], [0], color="#fbbf24", lw=2, label="NOTAM Advisory"),
-        Line2D([0], [0], color="#f97316", lw=2, label="NOTAM Controlled"),
-        Line2D([0], [0], color="#dc2626", lw=2, label="NOTAM Restricted"),
+        Line2D([0], [0], color="#0072B2", lw=2, label="Permanent Constraints"),
+        Line2D([0], [0], color="#333333", lw=2, label="Static Obstacles"),
+        Line2D([0], [0], color="#009E73", lw=2, label="Emergency Sites"),
+        Line2D([0], [0], color="#E69F00", lw=2, label="Mission Goal"),
+        Line2D([0], [0], color="#CC79A7", lw=2, linestyle=":", label="NOTAM Advisory"),
+        Line2D([0], [0], color="#D55E00", lw=2, linestyle="--", label="NOTAM Controlled"),
+        Line2D([0], [0], color="#000000", lw=2, linestyle="-", label="NOTAM Restricted"),
     ]
     ax_map.legend(handles=legend_handles, loc="upper right", fontsize=8, framealpha=0.9)
 
@@ -335,26 +346,30 @@ def main():
             patch.set_visible(True)
 
             applies_to_alt = ownship_alt in set(notam.get("alt_layers", []))
-            emphasis_alpha = 0.30 if applies_to_alt else 0.14
+            emphasis_alpha = 0.35 if applies_to_alt else 0.15
 
+            # Dynamic NOTAM Rendering (Color + Linestyle)
             if phase == "advisory":
                 advisory_count += 1
-                patch.set_edgecolor("#fbbf24")
-                patch.set_facecolor("#fde68a")
+                patch.set_edgecolor("#CC79A7")  # Reddish Purple
+                patch.set_facecolor("#EBB3D1")
                 patch.set_alpha(emphasis_alpha)
-                patch.set_linestyle("-")
+                patch.set_linestyle(":")
+                patch.set_linewidth(2.0)
             elif phase == "controlled":
                 controlled_count += 1
-                patch.set_edgecolor("#f97316")
-                patch.set_facecolor("#fed7aa")
+                patch.set_edgecolor("#D55E00")  # Vermillion
+                patch.set_facecolor("#F49551")
                 patch.set_alpha(emphasis_alpha + 0.05)
-                patch.set_linestyle("-")
+                patch.set_linestyle("--")
+                patch.set_linewidth(2.0)
             else:
                 restricted_count += 1
-                patch.set_edgecolor("#dc2626")
-                patch.set_facecolor("#fecaca")
+                patch.set_edgecolor("#000000")  # Black
+                patch.set_facecolor("#777777")
                 patch.set_alpha(emphasis_alpha + 0.07)
                 patch.set_linestyle("-")
+                patch.set_linewidth(2.0)
 
         npc_points = []
         active_npc_count = 0
