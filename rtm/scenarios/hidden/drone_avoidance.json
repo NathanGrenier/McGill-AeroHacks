@@ -1,0 +1,73 @@
+{
+  "shrinking_notams": [
+    {
+      "id": "goal_blocker_notam",
+      "region": {
+        "type": "CircleRegion",
+        "center_pos": { "x": 8000, "y": 5000 },
+        "radius": 800
+      },
+      "alt_layers": [1, 2, 3],
+      "advisory_start_time": 250,
+      "controlled_start_time": 350,
+      "restricted_start_time": 450
+    }
+  ],
+  "traffic_traces": [
+    {
+      "id": "head_on_kamikaze",
+      "segments": [
+        {
+          "start_time": 0,
+          "end_time": 1000,
+          "start_pos": { "x": 3800, "y": 5000 },
+          "velocity": { "x": -12.0, "y": 0.0 },
+          "alt_layer": 2
+        }
+      ]
+    },
+    {
+      "id": "altitude_drop_ambush",
+      "segments": [
+        {
+          "start_time": 0,
+          "end_time": 150,
+          "start_pos": { "x": 3250, "y": 4950 },
+          "velocity": { "x": 0.0, "y": 0.0 },
+          "alt_layer": 4
+        },
+        {
+          "start_time": 150,
+          "end_time": 1000,
+          "start_pos": { "x": 3250, "y": 4950 },
+          "velocity": { "x": 0, "y": 0 },
+          "alt_layer": 2
+        }
+      ]
+    },
+    {
+      "id": "pincer_top",
+      "segments": [
+        {
+          "start_time": 0,
+          "end_time": 1000,
+          "start_pos": { "x": 4210, "y": 8000 },
+          "velocity": { "x": 0, "y": -14.0 },
+          "alt_layer": 3
+        }
+      ]
+    },
+    {
+      "id": "pincer_bottom",
+      "segments": [
+        {
+          "start_time": 0,
+          "end_time": 1000,
+          "start_pos": { "x": 4210, "y": 2000 },
+          "velocity": { "x": 0, "y": 14.0 },
+          "alt_layer": 1
+        }
+      ]
+    }
+  ]
+}
