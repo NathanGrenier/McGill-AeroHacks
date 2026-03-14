@@ -1,0 +1,21 @@
+{
+  "shrinking_notams": [
+    {
+      "id": "notam_hard_go_through",
+      "region": {
+        "type": "PolygonRegion",
+        "vertices": [
+          { "x": 7500, "y": 1000 },
+          { "x": 8000, "y": 1000 },
+          { "x": 8000, "y": 9000 },
+          { "x": 7500, "y": 9000 }
+        ]
+      },
+      "alt_layers": [0, 1, 2, 3, 4],
+      "advisory_start_time": 250,
+      "controlled_start_time": 350,
+      "restricted_start_time": 450
+    }
+  ],
+  "traffic_traces": []
+}

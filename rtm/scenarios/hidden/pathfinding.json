@@ -1,0 +1,65 @@
+{
+  "shrinking_notams": [
+    {
+      "id": "notam_easy_go_around",
+      "region": {
+        "type": "CircleRegion",
+        "center_pos": { "x": 4000, "y": 5000 },
+        "radius": 1000
+      },
+      "alt_layers": [0, 1, 2, 3, 4],
+      "advisory_start_time": 100,
+      "controlled_start_time": 150,
+      "restricted_start_time": 200
+    },
+    {
+      "id": "notam_third_wall_bottom",
+      "region": {
+        "type": "PolygonRegion",
+        "vertices": [
+          { "x": 5500, "y": 0 },
+          { "x": 6000, "y": 0 },
+          { "x": 6000, "y": 3000 },
+          { "x": 5500, "y": 3000 }
+        ]
+      },
+      "alt_layers": [0, 1, 2, 3, 4],
+      "advisory_start_time": 150,
+      "controlled_start_time": 250,
+      "restricted_start_time": 350
+    },
+    {
+      "id": "notam_third_wall_middle",
+      "region": {
+        "type": "PolygonRegion",
+        "vertices": [
+          { "x": 5500, "y": 4000 },
+          { "x": 6000, "y": 4000 },
+          { "x": 6000, "y": 7000 },
+          { "x": 5500, "y": 7000 }
+        ]
+      },
+      "alt_layers": [0, 1, 2, 3, 4],
+      "advisory_start_time": 150,
+      "controlled_start_time": 250,
+      "restricted_start_time": 350
+    },
+    {
+      "id": "notam_third_wall_top",
+      "region": {
+        "type": "PolygonRegion",
+        "vertices": [
+          { "x": 5500, "y": 8000 },
+          { "x": 6000, "y": 8000 },
+          { "x": 6000, "y": 10000 },
+          { "x": 5500, "y": 10000 }
+        ]
+      },
+      "alt_layers": [0, 1, 2, 3, 4],
+      "advisory_start_time": 150,
+      "controlled_start_time": 250,
+      "restricted_start_time": 350
+    }
+  ],
+  "traffic_traces": []
+}

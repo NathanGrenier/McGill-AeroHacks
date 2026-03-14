@@ -1,0 +1,50 @@
+{
+  "scenario_id": "pathfinding",
+  "map_boundaries": {
+    "vertices": [
+      { "x": 0, "y": 0 },
+      { "x": 10000, "y": 0 },
+      { "x": 10000, "y": 10000 },
+      { "x": 0, "y": 10000 }
+    ]
+  },
+  "permanent_constraints": [],
+  "static_obstacles": [],
+  "emergency_landing_sites": [],
+  "mission_goal": {
+    "region": {
+      "vertices": [
+        { "x": 9000, "y": 4500 },
+        { "x": 9500, "y": 4500 },
+        { "x": 9500, "y": 5500 },
+        { "x": 9000, "y": 5500 }
+      ]
+    },
+    "target_alt_layer": 2
+  },
+  "vehicle_limits": {
+    "max_horizontal_speed": 15.0,
+    "max_vertical_rate": 1,
+    "energy_decay_rate": 0.1,
+    "energy_reserve_threshold": 10.0
+  },
+  "scoring_config": {
+    "base_success_score": 1000.0,
+    "safe_emergency_landing_score": 300.0,
+    "controlled_phase_penalty": -50.0,
+    "restricted_phase_penalty": -200.0,
+    "separation_loss_penalty_advisory": -10.0,
+    "separation_loss_penalty_conflict": -150.0,
+    "collision_penalty": -500.0,
+    "battery_breach_penalty": -500.0,
+    "time_bonus_multiplier": 10.0,
+    "max_time": 1500
+  },
+  "start_state": {
+    "position": { "x": 1000, "y": 5000 },
+    "alt_layer": 2,
+    "energy": 500.0,
+    "velocity": { "x": 0.0, "y": 0.0 },
+    "heading": 0.0
+  }
+}
