@@ -7,7 +7,6 @@ because processing time doing wifi stuff is processing time not spent updating t
 which will lead to increased drift
 """
 
-
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -63,13 +63,29 @@ def region_to_patch(region, edgecolor, facecolor, linewidth=1.3, alpha=0.25, lin
             return None
         cx, cy = as_xy(center)
         radius = float(region.get("radius", 0))
-        return Circle((cx, cy), radius=radius, edgecolor=edgecolor, facecolor=facecolor, linewidth=linewidth, alpha=alpha, linestyle=linestyle)
+        return Circle(
+            (cx, cy),
+            radius=radius,
+            edgecolor=edgecolor,
+            facecolor=facecolor,
+            linewidth=linewidth,
+            alpha=alpha,
+            linestyle=linestyle,
+        )
 
     vertices = region.get("vertices", [])
     if not vertices:
         return None
     points = [as_xy(v) for v in vertices]
-    return Polygon(points, closed=True, edgecolor=edgecolor, facecolor=facecolor, linewidth=linewidth, alpha=alpha, linestyle=linestyle)
+    return Polygon(
+        points,
+        closed=True,
+        edgecolor=edgecolor,
+        facecolor=facecolor,
+        linewidth=linewidth,
+        alpha=alpha,
+        linestyle=linestyle,
+    )
 
 
 def get_notam_phase(notam, time_value):
@@ -116,8 +132,14 @@ def get_recent_traffic_trail(segment, time_value, trail_steps=25):
 def main():
     parser = argparse.ArgumentParser(description="Interactive playback viewer with slider")
     parser.add_argument("--playback", default="playback.json", help="Playback JSON path")
-    parser.add_argument("--scenario", default="scenario.json", help="Scenario JSON path for map bounds")
-    parser.add_argument("--hidden", default="aerohacks/dummy_hidden.json", help="Hidden events JSON path for NOTAMs/NPC traffic")
+    parser.add_argument(
+        "--scenario", default="scenario.json", help="Scenario JSON path for map bounds"
+    )
+    parser.add_argument(
+        "--hidden",
+        default="aerohacks/dummy_hidden.json",
+        help="Hidden events JSON path for NOTAMs/NPC traffic",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.playback):
@@ -222,7 +244,9 @@ def main():
                 gy = sum(v["y"] for v in goal_vertices) / len(goal_vertices)
                 goal_center = float(gx), float(gy)
         if goal_center is not None:
-            ax_map.text(goal_center[0], goal_center[1], " GOAL", fontsize=8, color="#166534", va="center")
+            ax_map.text(
+                goal_center[0], goal_center[1], " GOAL", fontsize=8, color="#166534", va="center"
+            )
 
     notam_layers = []
     if hidden is not None:
@@ -246,16 +270,24 @@ def main():
     npc_scatter = ax_map.scatter([], [], s=34, color="#0ea5e9", marker="x", zorder=6)
     npc_trails = []
     for _ in traffic_traces:
-        line, = ax_map.plot([], [], color="#38bdf8", linewidth=0.9, alpha=0.8)
+        (line,) = ax_map.plot([], [], color="#38bdf8", linewidth=0.9, alpha=0.8)
         npc_trails.append(line)
 
     ax_map.plot(xs, ys, color="#b0b0b0", linewidth=1.5, alpha=0.8)
-    trail_line, = ax_map.plot([xs[0]], [ys[0]], color="#1f77b4", linewidth=2.5)
+    (trail_line,) = ax_map.plot([xs[0]], [ys[0]], color="#1f77b4", linewidth=2.5)
     current_point = ax_map.scatter([xs[0]], [ys[0]], s=70, color="#d62728", zorder=3)
 
     legend_handles = [
         Line2D([0], [0], color="#1f77b4", lw=2.5, label="Ownship Trail"),
-        Line2D([0], [0], marker="o", color="w", markerfacecolor="#d62728", markersize=8, label="Ownship"),
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            color="w",
+            markerfacecolor="#d62728",
+            markersize=8,
+            label="Ownship",
+        ),
         Line2D([0], [0], marker="x", color="#0ea5e9", markersize=8, lw=0, label="NPC Drones"),
         Line2D([0], [0], color="#ff8c00", lw=2, label="Permanent Constraints"),
         Line2D([0], [0], color="#16a34a", lw=2, label="Emergency Sites / Goal"),

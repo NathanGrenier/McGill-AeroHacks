@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+projects=("drone-hover" "rtm")
+
+if ! command -v uv >/dev/null 2>&1; then
+    echo "pre-commit: uv is required to run Ruff formatting." >&2
+    exit 1
+fi
+
+format_project() {
+    local project="$1"
+    local project_path="$repo_root/$project"
+    local staged_files=()
+
+    if [[ ! -d "$project_path" ]]; then
+        echo "pre-commit: skipping missing project '$project'." >&2
+        return 0
+    fi
+
+    mapfile -d '' staged_files < <(
+        git diff --cached --name-only --diff-filter=ACMR -z -- "$project"
+    )
+
+    echo "pre-commit: formatting $project"
+    (
+        cd "$project_path"
+        uv run ruff format
+    )
+
+    if ((${#staged_files[@]} > 0)); then
+        git add -- "${staged_files[@]}"
+    fi
+}
+
+for project in "${projects[@]}"; do
+    format_project "$project"
+done
