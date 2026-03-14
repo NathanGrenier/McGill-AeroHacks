@@ -9,6 +9,7 @@
   },
   "ruff.importStrategy": "fromEnvironment",
   "cSpell.words": [
-    "aerohacks"
+    "aerohacks",
+    "ownship"
   ]
 }
