@@ -50,7 +50,13 @@ def parse_playback_series(playback_raw):
     times = [int(row["time"]) for row in playback]
     xs = [float(row["x"]) for row in playback]
     ys = [float(row["y"]) for row in playback]
+
+    # NEW: Strict altitude layer validation
     alt_layers = [int(row["alt_layer"]) for row in playback]
+    for index, alt in enumerate(alt_layers):
+        if alt < 0 or alt > 4:
+            raise ValueError(f"Invalid alt_layer at index {index}: {alt} (expected 0..4)")
+
     energies = [float(row["energy"]) for row in playback]
     return playback, times, xs, ys, alt_layers, energies
 
@@ -132,12 +138,16 @@ def get_recent_traffic_trail(segment, time_value, trail_steps=25):
 def main():
     parser = argparse.ArgumentParser(description="Interactive playback viewer with slider")
     parser.add_argument("--playback", default="playback.json", help="Playback JSON path")
+
+    # NEW: Updated default file paths
     parser.add_argument(
-        "--scenario", default="scenario.json", help="Scenario JSON path for map bounds"
+        "--scenario",
+        default="scenarios/public/example_training.json",
+        help="Scenario JSON path for map bounds",
     )
     parser.add_argument(
         "--hidden",
-        default="aerohacks/dummy_hidden.json",
+        default="scenarios/hidden/example_training.json",
         help="Hidden events JSON path for NOTAMs/NPC traffic",
     )
     args = parser.parse_args()
@@ -218,8 +228,9 @@ def main():
             if patch is not None:
                 ax_map.add_patch(patch)
 
-        # Goal -> Bright Orange/Yellow
-        goal_region = scenario.get("mission_goal", {}).get("region")
+        # NEW: Safer dictionary lookup for goal_region
+        # Goal Colors
+        goal_region = scenario.get("mission_goal", {}).get("region", {})
         if goal_region:
             patch = region_to_patch(
                 goal_region,
@@ -258,7 +269,7 @@ def main():
     notam_layers = []
     if hidden is not None:
         for notam in hidden.get("shrinking_notams", []):
-            # Initial invisible patch
+            # Initial invisible patch with specific colors
             patch = region_to_patch(
                 notam.get("region", {}),
                 edgecolor="#CC79A7",
@@ -306,7 +317,10 @@ def main():
         Line2D([0], [0], color="#D55E00", lw=2, linestyle="--", label="NOTAM Controlled"),
         Line2D([0], [0], color="#000000", lw=2, linestyle="-", label="NOTAM Restricted"),
     ]
-    ax_map.legend(handles=legend_handles, loc="upper right", fontsize=8, framealpha=0.9)
+    map_legend = ax_map.legend(
+        handles=legend_handles, loc="upper right", fontsize=8, framealpha=0.9
+    )
+    map_legend.set_draggable(True)
 
     status_text = ax_map.text(
         0.02,
@@ -348,7 +362,7 @@ def main():
             applies_to_alt = ownship_alt in set(notam.get("alt_layers", []))
             emphasis_alpha = 0.35 if applies_to_alt else 0.15
 
-            # Dynamic NOTAM Rendering (Color + Linestyle)
+            # Dynamic NOTAM Rendering (Color + Linestyle) preserved exactly
             if phase == "advisory":
                 advisory_count += 1
                 patch.set_edgecolor("#CC79A7")  # Reddish Purple
@@ -387,10 +401,12 @@ def main():
             npc_trails[trace_index].set_data(trail_x, trail_y)
             npc_trails[trace_index].set_alpha(0.85 if npc_alt == ownship_alt else 0.35)
 
+        # NEW: Cleaner Matplotlib scatter point hiding
         if npc_points:
+            npc_scatter.set_visible(True)
             npc_scatter.set_offsets(npc_points)
         else:
-            npc_scatter.set_offsets([])
+            npc_scatter.set_visible(False)
 
         status_text.set_text(
             f"time={t}\n"
