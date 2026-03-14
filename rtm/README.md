@@ -4,6 +4,7 @@
 ## Useful Commands
 
 ### Run Simulation
+#### With Visualization
 ```bash
 # macOS / Linux
 ./AeroHacksSim --policy ./my_algorithm --scenario example_training
@@ -12,10 +13,22 @@
 AeroHacksSim.exe --policy ./my_algorithm --scenario example_training
 ```
 
+#### No Visualization
+```bash
+./AeroHacksSim.exe --policy ./my_algorithm --scenario example_training --no-viz
+```
+
 ### Run Playback File
+
 ```bash
 uv run view_playback.py --playback playback.json --scenario scenarios/public/example_training.json --hidden scenarios/hidden/example_training.json
 ```
+
+### Analyze Playback Score
+```bash
+uv run analyze_score.py --scenario scenarios/public/example_training.json --hidden scenarios/hidden/example_training.json  
+```
+> Uses the file called `playback.json` by default.
 
 ## Development Setup
 
