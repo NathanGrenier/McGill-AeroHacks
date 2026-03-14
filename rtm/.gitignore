@@ -1,0 +1,9 @@
+# Ignore the OS-specific copy in this root folder
+/AeroHacksSim
+/AeroHacksSim-MacOS
+/AeroHacksSim.exe
+
+playback.json
+
+repomix.config.json
+repomix-output.*
