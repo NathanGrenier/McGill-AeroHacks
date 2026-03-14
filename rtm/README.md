@@ -14,10 +14,7 @@ AeroHacksSim.exe --policy ./my_algorithm --scenario example_training
 
 ### Run Playback File
 ```bash
-uv run view_playback.py \                                                                                                                                        ─╯
-  --playback playback.json \
-  --scenario scenarios/public/example_training.json \
-  --hidden scenarios/hidden/example_training.json
+uv run view_playback.py --playback playback.json --scenario scenarios/public/example_training.json --hidden scenarios/hidden/example_training.json
 ```
 
 ## Development Setup
