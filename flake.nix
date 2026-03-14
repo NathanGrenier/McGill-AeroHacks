@@ -18,6 +18,8 @@
           packages = [
             python
             pkgs.uv
+     pkgs.qt6.qtbase
+        pkgs.python312Packages.pyqt6
           ];
 
           buildInputs = [
